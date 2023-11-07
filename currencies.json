@@ -1,0 +1,33 @@
+{
+  "USD": {
+    "Coins": [
+      { "value": "0.01", "name": "Penny" },
+      { "value": "0.05", "name": "Nickel" },
+      { "value": "0.10", "name": "Dime" },
+      { "value": "0.25", "name": "Quarter" },
+      { "value": "0.50", "name": "Half Dollar" },
+      { "value": "1.00", "name": "Dollar Coin" }
+    ],
+    "Banknotes": [
+      { "value": "1", "name": "$1 Bill" },
+      { "value": "2", "name": "$2 Bill" },
+      { "value": "5", "name": "$5 Bill" },
+      { "value": "10", "name": "$10 Bill" },
+      { "value": "20", "name": "$20 Bill" },
+      { "value": "50", "name": "$50 Bill" },
+      { "value": "100", "name": "$100 Bill" }
+    ]
+  },
+  "EUR": {
+    "Coins": [
+      { "value": "0.01", "name": "1 Cent Coin" },
+      { "value": "0.02", "name": "2 Cent Coin" },
+      // ... More coins
+    ],
+    "Banknotes": [
+      { "value": "5", "name": "€5 Bill" },
+      // ... More banknotes
+    ]
+  },
+  // ... More currencies
+}
