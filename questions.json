@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "questions": [
     "What was your funnest subject in high school & which one did you dread?",
     "What is one attribute of your mother that you see in yourself?",
@@ -53,6 +53,7 @@
     "What is the worst job you ever had?"   
     "What values are most important to you in our relationship?",
     "How can we support each other's personal growth?",
-    "What does intimacy mean to you?"
+    "What does intimacy mean to you?",
+    
   ]
 }
