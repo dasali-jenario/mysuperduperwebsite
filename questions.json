@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "questions": [
     "What was your funnest subject in high school & which one did you dread?",
     "What is one attribute of your mother that you see in yourself?",
@@ -45,6 +45,14 @@
     "When’s the last time you cried?",
     "What do you hope your life looks like in five years?",
     "What do you want to be remembered for?",
-    "What is one thing you wish that you were really good at?"
+    "What is one thing you wish that you were really good at?",
+    "What is your favorite childhood memory?",
+    "What did you want to be when you grew up?",
+    "What did your parent name you after?",
+    "What hobby would you like to take up together?",
+    "What is the worst job you ever had?"   
+    "What values are most important to you in our relationship?",
+    "How can we support each other's personal growth?",
+    "What does intimacy mean to you?"
   ]
 }
