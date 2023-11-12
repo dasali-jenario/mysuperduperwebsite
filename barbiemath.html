@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Barbie Math Lessons</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      background-color: #FFC0CB; /* Barbie hot pink background */
+    }
+    #app {
+      margin-top: 50px;
+    }
+    #question {
+      margin: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+    #answer {
+      margin: 20px auto;
+      font-size: 24px;
+      padding: 10px;
+      text-align: center;
+      border: 2px solid #FF69B4; /* Barbie hot pink border */
+      width: 100px; /* Adjusted width for multiple digits */
+    }
+    #result {
+      margin: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+    button {
+      font-size: 24px;
+      padding: 10px;
+      background-color: #FF69B4; /* Barbie hot pink button */
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .cat-image {
+      max-width: 200px;
+      margin: 20px auto;
+      display: block; /* This makes it center below the button */
+    }
+    .number-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* Arrange buttons in a grid like a numpad */
+      gap: 10px;
+      margin-top: 20px;
+      width: 150px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .number-block {
+      width: 50px;
+      height: 50px;
+      line-height: 50px; /* Align text vertically */
+      background-color: #FF69B4; /* Barbie hot pink background */
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none; /* Prevent text selection */
+    }
+    .clear-button, .skip-button {
+      background-color: #FFB6C1; /* Lighter pink for the clear and skip buttons */
+      width: 100px; /* Wider buttons for clear and skip */
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Barbie Math Lessons</h1>
+    <div id="question"></div>
+    <div class="number-blocks">
+      <!-- Dynamically generated number blocks will go here -->
+    </div>
+    <input type="text" id="answer" readonly />
+    <div>
+      <button onclick="checkAnswer()">Check Answer</button>
+      <button class="clear-button" onclick="clearAnswer()">Clear</button>
+      <button class="skip-button" onclick="skipQuestion()">Skip</button>
+    </div>
+    <div id="result"></div>
+    <img id="catImage" class="cat-image" style="display:none;" />
+  </div>
+  <script>
+    let num1, num2;
+    const happyCatUrl = "https://raw.githubusercontent.com/dasali-jenario/mysuperduperwebsite/main/happy.avif";
+    const sadCatUrl = "https://raw.githubusercontent.com/dasali-jenario/mysuperduperwebsite/main/sad.jpg";
+
+    function generateQuestion() {
+      num1 = Math.floor(Math.random() * 40) + 1; // Adjusted for numbers up to 50
+      num2 = Math.floor(Math.random() * 40) + 1; // Adjusted for numbers up to 50
+      document.getElementById('question').innerText = `What is ${num1} + ${num2}?`;
+      clearAnswer(false);
+    }
+
+    function generateNumberBlocks() {
+      const numberBlocksContainer = document.querySelector('.number-blocks');
+      numberBlocksContainer.innerHTML = ''; // Clear previous blocks
+      // Arrange the numbers like a numpad
+      [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(num => {
+        const numberBlock = document.createElement('div');
+        numberBlock.innerText = num;
+        numberBlock.className = 'number-block';
+        numberBlock.onclick = function() {
+          document.getElementById('answer').value += num.toString(); // Append clicked number as answer
+        };
+        numberBlocksContainer.appendChild(numberBlock);
+      });
+      // Add a zero block at the end
+      const zeroBlock = document.createElement('div');
+      zeroBlock.innerText = '0';
+      zeroBlock.className = 'number-block';
+      zeroBlock.onclick = function() {
+        document.getElementById('answer').value += '0'; // Append clicked number as answer
+      };
+      numberBlocksContainer.appendChild(zeroBlock);
+    }
+
+    function clearAnswer(shouldGenerateQuestion = true) {
+      document.getElementById('answer').value = '';
+      if (shouldGenerateQuestion) {
+        document.getElementById('result').innerText = '';
+        document.getElementById('catImage').style.display = 'none';
+      }
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById('answer').value, 10);
+      if (userAnswer === num1 + num2) {
+        document.getElementById('result').innerText = 'Correct! You did it!';
+        document.getElementById('catImage').src = happyCatUrl;
+        document.getElementById('catImage').style.display = 'block';
+      } else {
+        document.getElementById('result').innerText = 'Not quite, try again!';
+        document.getElementById('catImage').src = sadCatUrl;
+        document.getElementById('catImage').style.display = 'block';
+      }
+      clearAnswer(false); // Clear the answer but keep the result and image
+    }
+
+    function skipQuestion() {
+      generateQuestion();
+    }
+
+    window.onload = function() {
+      generateQuestion();
+      generateNumberBlocks();
+    };
+  </script>
+</body>
+</html>
