@@ -3,45 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>Barbie Math Lessons</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       text-align: center;
       font-family: 'Arial', sans-serif;
       background-color: #FFC0CB; /* Barbie hot pink background */
+      padding: 10px;
+      margin: 0;
     }
     #app {
-      margin-top: 50px;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 10px;
+      background: #FFF;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
     #question {
-      margin: 20px;
+      margin: 10px;
       font-size: 24px;
       color: #333;
     }
     #answer {
-      margin: 20px auto;
+      margin: 10px auto;
       font-size: 24px;
       padding: 10px;
       text-align: center;
       border: 2px solid #FF69B4; /* Barbie hot pink border */
-      width: 100px; /* Adjusted width for multiple digits */
+      width: 80%; /* Responsive width */
+      max-width: 200px;
     }
     #result {
-      margin: 20px;
+      margin: 10px;
       font-size: 24px;
       color: #333;
     }
     button {
-      font-size: 24px;
+      font-size: 18px;
       padding: 10px 15px;
       background-color: #FF69B4; /* Barbie hot pink button */
       color: white;
       border: none;
       cursor: pointer;
       margin: 5px;
-      min-width: 150px; /* Minimum width to fit text on one line */
+      width: 48%; /* Responsive button sizing */
+      box-sizing: border-box;
     }
     .cat-image {
-      max-width: 200px;
+      max-width: 90%;
       margin: 20px auto;
       display: block; /* This makes it center below the button */
     }
@@ -50,23 +60,26 @@
       grid-template-columns: repeat(3, 1fr); /* Arrange buttons in a grid like a numpad */
       gap: 10px;
       margin-top: 20px;
-      width: 150px;
-      margin-left: auto;
-      margin-right: auto;
     }
     .number-block {
-      width: 50px;
-      height: 50px;
-      line-height: 50px; /* Align text vertically */
+      width: 100%;
+      padding: 10px 0; /* Padding for square appearance */
       background-color: #FF69B4; /* Barbie hot pink background */
       color: white;
       font-size: 24px;
       cursor: pointer;
       user-select: none; /* Prevent text selection */
     }
-    .clear-button {
-      background-color: #FFB6C1; /* Lighter pink for the clear button */
-      min-width: 120px; /* Minimum width to fit text on one line */
+    @media (max-width: 600px) {
+      #question, #result {
+        font-size: 5vw; /* Adaptive text size */
+      }
+      button {
+        font-size: 4vw; /* Adaptive button text size */
+      }
+      .number-block {
+        font-size: 5vw; /* Adaptive number block text size */
+      }
     }
   </style>
 </head>
@@ -80,7 +93,7 @@
     <input type="text" id="answer" readonly />
     <div>
       <button onclick="checkAnswer()">Check Answer</button>
-      <button class="clear-button" onclick="clearAnswer()">Clear</button>
+      <button onclick="clearAnswer()">Clear</button>
       <button onclick="skipQuestion()">Next Question</button>
     </div>
     <div id="result"></div>
