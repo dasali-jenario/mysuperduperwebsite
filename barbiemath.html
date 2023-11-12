@@ -14,7 +14,7 @@
       overflow-x: hidden; /* Prevent horizontal scroll */
     }
     .math-app {
-      width: 80%;
+      width: 100%;
       max-width: 500px;
       margin: 20px auto;
       padding: 10px;
@@ -29,30 +29,30 @@
       margin: 20px 0;
     }
     button {
-      background-color: #FF69B4;
+      background-color: #FF69B4; /* Barbie pink */
       border: none;
       padding: 10px;
       border-radius: 5px;
       color: white;
-      font-size: 1em;
+      font-size: 1em; /* Responsive font size */
       cursor: pointer;
       user-select: none;
     }
     #question, #answer, #result {
-      margin-bottom: 15px;
+      margin-bottom: 15px; /* Consistent spacing on y axis */
     }
     #question {
-      font-size: 1.5em;
+      font-size: 1.5em; /* Responsive font size */
     }
     #answer {
       font-size: 1.5em;
       padding: 10px;
-      border: 2px solid #FF69B4;
-      width: 80%;
+      border: 2px solid #FF69B4; /* Barbie pink */
+      width: 80%; /* Responsive width */
       margin: auto;
     }
     #result {
-      font-size: 1.2em;
+      font-size: 1.2em; /* Responsive font size */
     }
     .overlay {
       display: none;
@@ -61,7 +61,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.75);
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -74,12 +74,13 @@
       text-align: center;
     }
     .overlay img {
-      max-width: 150px;
-      margin: 20px 0;
+      max-width: 80%; /* Maximized size for cat image */
+      max-height: 50vh; /* Maximized based on viewport height */
+      margin: 0 auto; /* Centering image */
     }
     @media (max-width: 768px) {
       .action-buttons {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Stack buttons on smaller screens */
         gap: 10px;
       }
       .action-buttons button {
@@ -103,9 +104,10 @@
     <div id="result"></div>
   </div>
 
-  <div id="overlay" class="overlay">
-    <div class="overlay-content">
+  <div id="overlay" class="overlay" onclick="nextQuestion()">
+    <div class="overlay-content" onclick="event.stopPropagation()">
       <img id="catImage" src="" alt="Cat Image">
+      <p id="overlayText"></p>
       <button onclick="nextQuestion()">Next Question</button>
     </div>
   </div>
@@ -115,28 +117,24 @@
     const happyCatUrl = "https://raw.githubusercontent.com/dasali-jenario/mysuperduperwebsite/main/happy.avif";
     const sadCatUrl = "https://raw.githubusercontent.com/dasali-jenario/mysuperduperwebsite/main/sad.jpg";
 
-    function generateQuestion() {
-      // Generate two two-digit numbers whose sum is less than 100, no carrying required
-      num1 = generateNumber();
-      num2 = generateNumber(100 - num1); // Ensure the total is less than 100
-      document.getElementById('question').innerText = `What is ${num1} + ${num2}?`;
-      document.getElementById('answer').value = '';
-      document.getElementById('result').innerText = '';
+    function generateNumber() {
+      let firstDigit = Math.floor(Math.random() * 8) + 1; // 1-8 to ensure no carrying
+      let secondDigit = Math.floor(Math.random() * (9 - firstDigit)); // Ensures no carrying
+      return firstDigit * 10 + secondDigit;
     }
 
-    function generateNumber(max = 89) {
-      let number;
-      do {
-        number = Math.floor(Math.random() * 9 + 1) * 10; // Ensure a two-digit number
-        number += Math.floor(Math.random() * (10 - number % 10)); // Avoid carrying
-      } while (number > max);
-      return number;
+    function generateQuestion() {
+      num1 = generateNumber();
+      num2 = generateNumber();
+      document.getElementById('question').innerText = `What is ${num1} + ${num2}?`;
+      document.getElementById('answer').value = '';
+      document.getElementById('overlay').style.display = 'none';
     }
 
     function generateNumberBlocks() {
       const numberBlocksContainer = document.querySelector('.number-blocks');
       numberBlocksContainer.innerHTML = '';
-      for (let i = 1; i <= 9; i++) {
+      for (let i = 0; i <= 9; i++) {
         let numberBlock = document.createElement('button');
         numberBlock.innerText = i;
         numberBlock.className = 'number-block';
@@ -145,13 +143,6 @@
         };
         numberBlocksContainer.appendChild(numberBlock);
       }
-      let zeroBlock = document.createElement('button');
-      zeroBlock.innerText = '0';
-      zeroBlock.className = 'number-block';
-      zeroBlock.onclick = function() {
-        document.getElementById('answer').value += '0';
-      };
-      numberBlocksContainer.appendChild(zeroBlock);
     }
 
     function clearAnswer() {
@@ -161,21 +152,18 @@
 
     function checkAnswer() {
       let userAnswer = parseInt(document.getElementById('answer').value, 10);
-      let overlay = document.getElementById('overlay');
-      let catImage = document.getElementById('catImage');
+      let overlayText = document.getElementById('overlayText');
       if (userAnswer === num1 + num2) {
-        document.getElementById('result').innerText = 'Correct! You did it!';
-        catImage.src = happyCatUrl;
-        overlay.style.display = 'flex';
+        overlayText.innerText = 'Yay! You got it right!';
+        document.getElementById('catImage').src = happyCatUrl;
       } else {
-        document.getElementById('result').innerText = 'Not quite, try again!';
-        catImage.src = sadCatUrl;
-        overlay.style.display = 'flex';
+        overlayText.innerText = 'Oops! Try again!';
+        document.getElementById('catImage').src = sadCatUrl;
       }
+      document.getElementById('overlay').style.display = 'flex';
     }
 
     function nextQuestion() {
-      document.getElementById('overlay').style.display = 'none';
       generateQuestion();
     }
 
