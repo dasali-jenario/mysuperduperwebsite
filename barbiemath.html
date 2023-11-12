@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -31,12 +32,13 @@
     }
     button {
       font-size: 24px;
-      padding: 10px;
+      padding: 10px 15px;
       background-color: #FF69B4; /* Barbie hot pink button */
       color: white;
       border: none;
       cursor: pointer;
       margin: 5px;
+      min-width: 150px; /* Minimum width to fit text on one line */
     }
     .cat-image {
       max-width: 200px;
@@ -62,9 +64,9 @@
       cursor: pointer;
       user-select: none; /* Prevent text selection */
     }
-    .clear-button, .skip-button {
-      background-color: #FFB6C1; /* Lighter pink for the clear and skip buttons */
-      width: 100px; /* Wider buttons for clear and skip */
+    .clear-button {
+      background-color: #FFB6C1; /* Lighter pink for the clear button */
+      min-width: 120px; /* Minimum width to fit text on one line */
     }
   </style>
 </head>
@@ -79,7 +81,7 @@
     <div>
       <button onclick="checkAnswer()">Check Answer</button>
       <button class="clear-button" onclick="clearAnswer()">Clear</button>
-      <button class="skip-button" onclick="skipQuestion()">Skip</button>
+      <button onclick="skipQuestion()">Next Question</button>
     </div>
     <div id="result"></div>
     <img id="catImage" class="cat-image" style="display:none;" />
@@ -93,14 +95,14 @@
       num1 = Math.floor(Math.random() * 40) + 1; // Adjusted for numbers up to 50
       num2 = Math.floor(Math.random() * 40) + 1; // Adjusted for numbers up to 50
       document.getElementById('question').innerText = `What is ${num1} + ${num2}?`;
-      clearAnswer(false);
+      document.getElementById('answer').value = '';
     }
 
     function generateNumberBlocks() {
       const numberBlocksContainer = document.querySelector('.number-blocks');
       numberBlocksContainer.innerHTML = ''; // Clear previous blocks
       // Arrange the numbers like a numpad
-      [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(num => {
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 0].forEach(num => {
         const numberBlock = document.createElement('div');
         numberBlock.innerText = num;
         numberBlock.className = 'number-block';
@@ -109,22 +111,12 @@
         };
         numberBlocksContainer.appendChild(numberBlock);
       });
-      // Add a zero block at the end
-      const zeroBlock = document.createElement('div');
-      zeroBlock.innerText = '0';
-      zeroBlock.className = 'number-block';
-      zeroBlock.onclick = function() {
-        document.getElementById('answer').value += '0'; // Append clicked number as answer
-      };
-      numberBlocksContainer.appendChild(zeroBlock);
     }
 
-    function clearAnswer(shouldGenerateQuestion = true) {
+    function clearAnswer() {
       document.getElementById('answer').value = '';
-      if (shouldGenerateQuestion) {
-        document.getElementById('result').innerText = '';
-        document.getElementById('catImage').style.display = 'none';
-      }
+      document.getElementById('result').innerText = '';
+      document.getElementById('catImage').style.display = 'none';
     }
 
     function checkAnswer() {
@@ -133,15 +125,16 @@
         document.getElementById('result').innerText = 'Correct! You did it!';
         document.getElementById('catImage').src = happyCatUrl;
         document.getElementById('catImage').style.display = 'block';
+        setTimeout(generateQuestion, 2000); // Show the happy cat for a bit before the next question
       } else {
         document.getElementById('result').innerText = 'Not quite, try again!';
         document.getElementById('catImage').src = sadCatUrl;
         document.getElementById('catImage').style.display = 'block';
       }
-      clearAnswer(false); // Clear the answer but keep the result and image
     }
 
     function skipQuestion() {
+      clearAnswer(); // Clear the answer, message, and image
       generateQuestion();
     }
 
