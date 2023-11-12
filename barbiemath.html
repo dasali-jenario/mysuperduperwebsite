@@ -2,17 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Barbie Math Lessons</title>
+  <title>Barbie Math Lessons v1.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       text-align: center;
       font-family: 'Arial', sans-serif;
-      background-color: #FFC0CB; /* Barbie hot pink background */
-      padding: 10px;
+      background-color: #FFC0CB; /* Barbie's signature hot pink */
       margin: 0;
+      padding: 0;
+      overflow-x: hidden; /* Prevent horizontal scroll */
     }
-    #app {
+    .math-app {
+      width: 80%;
       max-width: 500px;
       margin: 20px auto;
       padding: 10px;
@@ -20,140 +22,166 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    #question {
-      margin: 10px;
-      font-size: 24px;
-      color: #333;
-    }
-    #answer {
-      margin: 10px auto;
-      font-size: 24px;
-      padding: 10px;
-      text-align: center;
-      border: 2px solid #FF69B4; /* Barbie hot pink border */
-      width: 80%; /* Responsive width */
-      max-width: 200px;
-    }
-    #result {
-      margin: 10px;
-      font-size: 24px;
-      color: #333;
+    .number-blocks, .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 20px 0;
     }
     button {
-      font-size: 18px;
-      padding: 10px 15px;
-      background-color: #FF69B4; /* Barbie hot pink button */
-      color: white;
+      background-color: #FF69B4;
       border: none;
-      cursor: pointer;
-      margin: 5px;
-      width: 48%; /* Responsive button sizing */
-      box-sizing: border-box;
-    }
-    .cat-image {
-      max-width: 90%;
-      margin: 20px auto;
-      display: block; /* This makes it center below the button */
-    }
-    .number-blocks {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* Arrange buttons in a grid like a numpad */
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .number-block {
-      width: 100%;
-      padding: 10px 0; /* Padding for square appearance */
-      background-color: #FF69B4; /* Barbie hot pink background */
+      padding: 10px;
+      border-radius: 5px;
       color: white;
-      font-size: 24px;
+      font-size: 1em;
       cursor: pointer;
-      user-select: none; /* Prevent text selection */
+      user-select: none;
     }
-    @media (max-width: 600px) {
-      #question, #result {
-        font-size: 5vw; /* Adaptive text size */
+    #question, #answer, #result {
+      margin-bottom: 15px;
+    }
+    #question {
+      font-size: 1.5em;
+    }
+    #answer {
+      font-size: 1.5em;
+      padding: 10px;
+      border: 2px solid #FF69B4;
+      width: 80%;
+      margin: auto;
+    }
+    #result {
+      font-size: 1.2em;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .overlay-content {
+      position: relative;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .overlay img {
+      max-width: 150px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .action-buttons {
+        grid-template-columns: 1fr;
+        gap: 10px;
       }
-      button {
-        font-size: 4vw; /* Adaptive button text size */
-      }
-      .number-block {
-        font-size: 5vw; /* Adaptive number block text size */
+      .action-buttons button {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <div id="app">
-    <h1>Barbie Math Lessons</h1>
+  <div class="math-app">
     <div id="question"></div>
+    <input type="text" id="answer" readonly>
     <div class="number-blocks">
-      <!-- Dynamically generated number blocks will go here -->
+      <!-- Number blocks will be inserted here by JavaScript -->
     </div>
-    <input type="text" id="answer" readonly />
-    <div>
+    <div class="action-buttons">
       <button onclick="checkAnswer()">Check Answer</button>
       <button onclick="clearAnswer()">Clear</button>
-      <button onclick="skipQuestion()">Next Question</button>
+      <button onclick="nextQuestion()">Next Question</button>
     </div>
     <div id="result"></div>
-    <img id="catImage" class="cat-image" style="display:none;" />
   </div>
+
+  <div id="overlay" class="overlay">
+    <div class="overlay-content">
+      <img id="catImage" src="" alt="Cat Image">
+      <button onclick="nextQuestion()">Next Question</button>
+    </div>
+  </div>
+
   <script>
     let num1, num2;
     const happyCatUrl = "https://raw.githubusercontent.com/dasali-jenario/mysuperduperwebsite/main/happy.avif";
     const sadCatUrl = "https://raw.githubusercontent.com/dasali-jenario/mysuperduperwebsite/main/sad.jpg";
 
     function generateQuestion() {
-      num1 = Math.floor(Math.random() * 40) + 1; // Adjusted for numbers up to 50
-      num2 = Math.floor(Math.random() * 40) + 1; // Adjusted for numbers up to 50
+      // Generate two two-digit numbers whose sum is less than 100, no carrying required
+      num1 = generateNumber();
+      num2 = generateNumber(100 - num1); // Ensure the total is less than 100
       document.getElementById('question').innerText = `What is ${num1} + ${num2}?`;
       document.getElementById('answer').value = '';
+      document.getElementById('result').innerText = '';
+    }
+
+    function generateNumber(max = 89) {
+      let number;
+      do {
+        number = Math.floor(Math.random() * 9 + 1) * 10; // Ensure a two-digit number
+        number += Math.floor(Math.random() * (10 - number % 10)); // Avoid carrying
+      } while (number > max);
+      return number;
     }
 
     function generateNumberBlocks() {
       const numberBlocksContainer = document.querySelector('.number-blocks');
-      numberBlocksContainer.innerHTML = ''; // Clear previous blocks
-      // Arrange the numbers like a numpad
-      [1, 2, 3, 4, 5, 6, 7, 8, 9, 0].forEach(num => {
-        const numberBlock = document.createElement('div');
-        numberBlock.innerText = num;
+      numberBlocksContainer.innerHTML = '';
+      for (let i = 1; i <= 9; i++) {
+        let numberBlock = document.createElement('button');
+        numberBlock.innerText = i;
         numberBlock.className = 'number-block';
         numberBlock.onclick = function() {
-          document.getElementById('answer').value += num.toString(); // Append clicked number as answer
+          document.getElementById('answer').value += i.toString();
         };
         numberBlocksContainer.appendChild(numberBlock);
-      });
+      }
+      let zeroBlock = document.createElement('button');
+      zeroBlock.innerText = '0';
+      zeroBlock.className = 'number-block';
+      zeroBlock.onclick = function() {
+        document.getElementById('answer').value += '0';
+      };
+      numberBlocksContainer.appendChild(zeroBlock);
     }
 
     function clearAnswer() {
       document.getElementById('answer').value = '';
       document.getElementById('result').innerText = '';
-      document.getElementById('catImage').style.display = 'none';
     }
 
     function checkAnswer() {
-      const userAnswer = parseInt(document.getElementById('answer').value, 10);
+      let userAnswer = parseInt(document.getElementById('answer').value, 10);
+      let overlay = document.getElementById('overlay');
+      let catImage = document.getElementById('catImage');
       if (userAnswer === num1 + num2) {
         document.getElementById('result').innerText = 'Correct! You did it!';
-        document.getElementById('catImage').src = happyCatUrl;
-        document.getElementById('catImage').style.display = 'block';
-        setTimeout(generateQuestion, 2000); // Show the happy cat for a bit before the next question
+        catImage.src = happyCatUrl;
+        overlay.style.display = 'flex';
       } else {
         document.getElementById('result').innerText = 'Not quite, try again!';
-        document.getElementById('catImage').src = sadCatUrl;
-        document.getElementById('catImage').style.display = 'block';
+        catImage.src = sadCatUrl;
+        overlay.style.display = 'flex';
       }
     }
 
-    function skipQuestion() {
-      clearAnswer(); // Clear the answer, message, and image
+    function nextQuestion() {
+      document.getElementById('overlay').style.display = 'none';
       generateQuestion();
     }
 
     window.onload = function() {
-      generateQuestion();
       generateNumberBlocks();
+      generateQuestion();
     };
   </script>
 </body>
